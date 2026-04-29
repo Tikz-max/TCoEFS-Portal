@@ -1,0 +1,1 @@
+export { buildCertificateIssuedEmail } from "../lib/email/elearning-templates";

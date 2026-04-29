@@ -1,0 +1,1 @@
+export { buildElearningEnrolledEmail } from "../lib/email/elearning-templates";

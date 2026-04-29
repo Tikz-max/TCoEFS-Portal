@@ -1,0 +1,911 @@
+/* ============================================================================
+   TCoEFS Portal — Global Design Tokens
+   Source of truth: design-system/styles-new.md
+
+   Every visual decision on this portal traces back to a token defined here.
+   No hard-coded color values, shadow values, or spacing values anywhere in
+   component files. If a value isn't in this file, it doesn't get used.
+   ============================================================================ */
+
+@import "tailwindcss";
+
+/* ============================================================================
+   FONTS — GeistSans + GeistMono
+   Matches tcoefs-unijos.org exactly. Loaded via next/font in app/layout.tsx.
+   CSS variables are set here as fallback-safe references.
+   ============================================================================ */
+
+:root {
+    /* var(--font-geist-sans) and var(--font-geist-mono) are injected by the
+     `geist` npm package via GeistSans.variable / GeistMono.variable in
+     app/layout.tsx. The named strings ('GeistSans', 'GeistMono') act as
+     fallbacks for any environment where next/font hasn't run yet. */
+    --font-sans:
+        var(--font-geist-sans, "GeistSans"), "Inter", system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+        sans-serif;
+    --font-mono:
+        var(--font-geist-mono, "GeistMono"), "JetBrains Mono", "Fira Code",
+        "Courier New", monospace;
+}
+
+/* ============================================================================
+   COLOR SYSTEM
+   ============================================================================ */
+
+:root {
+    /* ── Brand Greens ──────────────────────────────────────────────────────── */
+    /* #2D5A2D is the visual signature of TCoEFS. Sourced from the institution's
+     theme-color meta tag. Every element carrying this green carries authority. */
+
+    --green-darkest: #1a3a1a; /* footer, banner gradient start, deepest hover */
+    --green-primary: #2d5a2d; /* THE brand color — buttons, active states, fills */
+    --green-medium: #3d7a3d; /* button gradient top, hover tint on green surfaces */
+    --green-light: #56985e; /* secondary accents, step connector fill */
+    --green-pale: #a8d4a8; /* selected state tints, avatar backgrounds */
+    --green-whisper: #e8f5e8; /* sidebar hover, success toast bg, checklist complete */
+
+    /* ── Surface Layers — The Three-Layer Depth System ────────────────────── */
+    /* Color separation before shadows. Without distinct surface colors,
+     the elevation system has nothing to emerge from. */
+
+    --bg-surface-dark: #eff3ef; /* page canvas — green-tinted, never pure white */
+    --bg-surface-default: #ffffff; /* cards, panels, sidebars, modals */
+    --bg-surface-light: #ffffff; /* interactive elements within cards (shadow differentiates) */
+
+    /* ── Institutional Gold ────────────────────────────────────────────────── */
+    /* Used exclusively for earned achievement.
+     One gold element per screen. Certificate cards only.
+     No decorative use. Ever. */
+
+    --gold-primary: #c49a26;
+    --gold-light: #f0c840;
+    --gold-whisper: #fdf3d0;
+
+    /* ── Text ──────────────────────────────────────────────────────────────── */
+
+    --text-primary: #111b11; /* near-black with subtle green cast */
+    --text-secondary: #526052; /* green-toned mid-gray */
+    --text-muted: #8a9e8a; /* captions, placeholders, metadata */
+    --text-on-green: #ffffff; /* text on any green surface */
+    --text-on-gold: #1a1a00; /* text on gold surfaces */
+
+    /* ── Borders ───────────────────────────────────────────────────────────── */
+
+    --border-default: #d8e4d8; /* standard card and input borders */
+    --border-strong: #b0c8b0; /* emphasis borders, focused state adjacent */
+    --border-subtle: #ebf0eb; /* dividers, table row separators */
+
+    /* ── Status — Text Colors ──────────────────────────────────────────────── */
+
+    --status-success-text: #166534;
+    --status-error-text: #991b1b;
+    --status-warning-text: #92400e;
+    --status-info-text: #1e40af;
+
+    /* ── Status — Background Colors ───────────────────────────────────────── */
+
+    --status-success-bg: #dcfce7;
+    --status-error-bg: #fee2e2;
+    --status-warning-bg: #fef3c7;
+    --status-info-bg: #dbeafe;
+
+    /* ── Badge Colors (Application & Registration Status) ─────────────────── */
+    /* Each badge maps to exactly one semantic state. No decorative use. */
+
+    --badge-pending-text: #92400e;
+    --badge-pending-bg: #fef3c7;
+
+    --badge-review-text: #1e40af;
+    --badge-review-bg: #dbeafe;
+
+    --badge-approved-text: #166534;
+    --badge-approved-bg: #dcfce7;
+
+    --badge-rejected-text: #991b1b;
+    --badge-rejected-bg: #fee2e2;
+
+    --badge-verified-text: #166534;
+    --badge-verified-bg: #dcfce7;
+
+    --badge-incomplete-text: #374151;
+    --badge-incomplete-bg: #f3f4f6;
+
+    --badge-open-text: #2d5a2d;
+    --badge-open-bg: #e8f5e8;
+
+    --badge-closing-text: #92400e;
+    --badge-closing-bg: #fef3c7;
+
+    --badge-closed-text: #6b7280;
+    --badge-closed-bg: #f9fafb;
+
+    --badge-awaiting-text: #1e40af;
+    --badge-awaiting-bg: #dbeafe;
+
+    /* ── Badge Colors (E-Learning Module Status) ───────────────────────────── */
+
+    --badge-not-started-text: #6b7280;
+    --badge-not-started-bg: #f3f4f6;
+
+    --badge-in-progress-text: #1e40af;
+    --badge-in-progress-bg: #dbeafe;
+
+    --badge-completed-text: #166534;
+    --badge-completed-bg: #dcfce7;
+
+    --badge-failed-text: #991b1b;
+    --badge-failed-bg: #fee2e2;
+
+    --badge-gold-text: #92400e;
+    --badge-gold-bg: #fdf3d0;
+    --badge-gold-border: #f0c840;
+}
+
+/* ============================================================================
+   SHADOW & ELEVATION SYSTEM
+
+   The single most important technical section. Light comes from above.
+   Elevated elements catch light on their top edge and cast shadow below.
+   Recessed elements (inputs) receive shadow from above.
+
+   All shadows are green-tinted — rgba(45, 90, 45, ...) — to stay connected
+   to the brand rather than reading as generic gray.
+   ============================================================================ */
+
+:root {
+    /* ── Light Edge — Top catch on elevated surfaces ────────────────────────── */
+
+    --shadow-light-edge-sm: inset 0 1px 0 0 rgba(255, 255, 255, 0.65);
+    --shadow-light-edge-md: inset 0 1px 0 0 rgba(255, 255, 255, 0.75);
+    --shadow-light-edge-lg: inset 0 2px 0 0 rgba(255, 255, 255, 0.85);
+
+    /* ── Raw Shadow Layers ──────────────────────────────────────────────────── */
+
+    --shadow-sm:
+        0 1px 2px 0 rgba(45, 90, 45, 0.15), 0 2px 4px 0 rgba(45, 90, 45, 0.1);
+
+    --shadow-md:
+        0 4px 8px 0 rgba(45, 90, 45, 0.12), 0 8px 16px 0 rgba(45, 90, 45, 0.08);
+
+    --shadow-lg:
+        0 8px 16px 0 rgba(45, 90, 45, 0.14),
+        0 16px 32px 0 rgba(45, 90, 45, 0.1),
+        0 32px 48px 0 rgba(45, 90, 45, 0.06);
+
+    /* ── Inset — Recessed surfaces: inputs, progress tracks, upload zones ───── */
+
+    --shadow-inset:
+        inset 0 2px 4px 0 rgba(45, 90, 45, 0.15),
+        inset 0 -1px 0 0 rgba(255, 255, 255, 0.6);
+
+    /* ── Elevation Levels — Use these, not the raw shadows ─────────────────── */
+    /*
+     --elevation-1  →  Buttons (rest), sidebar
+     --elevation-2  →  Cards (rest), navbar (scrolled)
+     --elevation-3  →  Cards (hover), modals, auth card, reference card,
+                        certificate card, toasts, dropdowns
+  */
+
+    --elevation-1: var(--shadow-light-edge-sm), var(--shadow-sm);
+    --elevation-2: var(--shadow-light-edge-md), var(--shadow-md);
+    --elevation-3: var(--shadow-light-edge-lg), var(--shadow-lg);
+}
+
+/* ============================================================================
+   TYPOGRAPHY SCALE
+
+   Hierarchy is steep by design. An applicant opening their dashboard must
+   understand their status within 3 seconds without reading body copy.
+   Large = important. Bold = urgent. Green = actionable. Gray = contextual.
+   ============================================================================ */
+
+:root {
+    /* ── Display — One per page, hero headlines, public pages only ─────────── */
+    --text-display-size: 56px;
+    --text-display-height: 1.05;
+    --text-display-weight: 800;
+    --text-display-spacing: -1.5px;
+
+    /* ── Headings ───────────────────────────────────────────────────────────── */
+    --text-h1-size: 40px;
+    --text-h1-height: 1.1;
+    --text-h1-weight: 700;
+    --text-h1-spacing: -0.8px;
+
+    --text-h2-size: 28px;
+    --text-h2-height: 1.15;
+    --text-h2-weight: 700;
+    --text-h2-spacing: -0.4px;
+
+    --text-h3-size: 20px;
+    --text-h3-height: 1.25;
+    --text-h3-weight: 600;
+    --text-h3-spacing: -0.2px;
+
+    --text-h4-size: 17px;
+    --text-h4-height: 1.3;
+    --text-h4-weight: 600;
+    --text-h4-spacing: 0px;
+
+    /* ── Body ───────────────────────────────────────────────────────────────── */
+    --text-body-lg-size: 17px;
+    --text-body-lg-height: 1.65;
+    --text-body-lg-weight: 400;
+
+    --text-body-size: 15px;
+    --text-body-height: 1.6;
+    --text-body-weight: 400;
+
+    --text-body-sm-size: 13px;
+    --text-body-sm-height: 1.55;
+    --text-body-sm-weight: 400;
+
+    /* ── Functional ─────────────────────────────────────────────────────────── */
+    --text-label-size: 12px;
+    --text-label-height: 1.4;
+    --text-label-weight: 500;
+    --text-label-spacing: 0.6px;
+
+    --text-caption-size: 12px;
+    --text-caption-height: 1.4;
+    --text-caption-weight: 400;
+    --text-caption-spacing: 0.1px;
+
+    --text-btn-lg-size: 17px;
+    --text-btn-lg-weight: 700;
+    --text-btn-lg-spacing: 0.2px;
+
+    --text-btn-size: 15px;
+    --text-btn-weight: 700;
+    --text-btn-spacing: 0.2px;
+
+    --text-btn-sm-size: 13px;
+    --text-btn-sm-weight: 600;
+    --text-btn-sm-spacing: 0.1px;
+
+    /* ── Metric / KPI ───────────────────────────────────────────────────────── */
+    --text-metric-size: 32px;
+    --text-metric-height: 1;
+    --text-metric-weight: 700;
+    --text-metric-spacing: -0.5px;
+
+    /* ── Reference IDs — Monospace, non-negotiable size ────────────────────── */
+    /* Payment reference numbers, application IDs, invoice codes.
+     22px is the floor. These are physical documents rendered digitally. */
+
+    --text-ref-size: 22px;
+    --text-ref-height: 1.4;
+    --text-ref-weight: 400;
+    --text-ref-spacing: 0.8px;
+
+    --text-ref-sm-size: 15px;
+    --text-ref-sm-height: 1.4;
+    --text-ref-sm-weight: 400;
+    --text-ref-sm-spacing: 0.4px;
+}
+
+/* ============================================================================
+   SPACING SYSTEM
+   Base unit: 4px. Every padding, gap, and margin uses these values.
+   ============================================================================ */
+
+:root {
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+    --space-24: 96px;
+}
+
+/* ============================================================================
+   LAYOUT VARIABLES
+   ============================================================================ */
+
+:root {
+    --layout-max-width: 1280px;
+    --layout-padding: var(--space-8); /* 32px horizontal page padding */
+    --sidebar-width: 240px;
+    --detail-panel-width: 320px;
+    --module-nav-width: 280px;
+    --content-max-width: 900px; /* readable line length cap */
+    --card-gap: var(--space-6); /* 24px between cards in grids */
+    --navbar-height: 64px;
+}
+
+/* ============================================================================
+   BORDER RADIUS
+   ============================================================================ */
+
+:root {
+    --radius-sm: 6px; /* small buttons, tags, inline elements */
+    --radius-md: 8px; /* buttons, inputs, table ref cells */
+    --radius-lg: 12px; /* cards, table containers, audit log */
+    --radius-xl: 16px; /* auth card, reference card, certificate card, modals */
+    --radius-full: 9999px; /* badges, pills, avatar circles */
+}
+
+/* ============================================================================
+   MOTION & ANIMATION
+   Motion is functional. It confirms actions and communicates state changes.
+   It does not perform.
+   ============================================================================ */
+
+:root {
+    /* ── Easing ─────────────────────────────────────────────────────────────── */
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(
+        0.34,
+        1.56,
+        0.64,
+        1
+    ); /* button pop, step complete */
+    --ease-decel: cubic-bezier(0, 0, 0.2, 1); /* card stagger entrance */
+
+    /* ── Duration ───────────────────────────────────────────────────────────── */
+    --duration-instant: 80ms; /* button press, active state */
+    --duration-fast: 150ms; /* hover changes, badge fade */
+    --duration-default: 200ms; /* standard transitions */
+    --duration-medium: 300ms; /* reveals, modal open, card entrance */
+    --duration-slow: 500ms; /* progress bar fill, counter animate */
+    --duration-deliberate: 700ms; /* page transitions, loading sequences */
+}
+
+/* ── Keyframes ─────────────────────────────────────────────────────────────── */
+
+/* Page element entrance — used on page load and scroll-triggered reveals */
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade only — for elements that should not shift position on entry */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Step completion checkmark — satisfying pop when a step is completed */
+@keyframes check-pop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    65% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Toast notification entrance — slides up gently from bottom */
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Certificate reveal — ceremonial entrance after course completion */
+@keyframes cert-reveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(12px);
+    }
+    60% {
+        transform: scale(1.02) translateY(-2px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Upload progress pulse — confirms active upload state */
+@keyframes upload-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Skeleton shimmer — loading states for cards and table rows */
+@keyframes shimmer {
+    from {
+        background-position: -200% center;
+    }
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* ── Card Stagger — Programme and course listing pages ─────────────────────── */
+/* Apply these classes to cards to create a staggered entrance sequence */
+
+.card-stagger-1 {
+    animation: fade-up var(--duration-medium) var(--ease-decel) 0ms both;
+}
+.card-stagger-2 {
+    animation: fade-up var(--duration-medium) var(--ease-decel) 60ms both;
+}
+.card-stagger-3 {
+    animation: fade-up var(--duration-medium) var(--ease-decel) 120ms both;
+}
+.card-stagger-4 {
+    animation: fade-up var(--duration-medium) var(--ease-decel) 180ms both;
+}
+.card-stagger-5 {
+    animation: fade-up var(--duration-medium) var(--ease-decel) 240ms both;
+}
+.card-stagger-6 {
+    animation: fade-up var(--duration-medium) var(--ease-decel) 300ms both;
+}
+
+/* ============================================================================
+   BASE RESETS & GLOBAL DEFAULTS
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-surface-dark);
+    color: var(--text-primary);
+    min-height: 100dvh;
+}
+
+/* Remove default list styles — apply explicitly where needed */
+ul,
+ol {
+    list-style: none;
+}
+
+/* Remove default anchor styles */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Images fill their containers by default */
+img,
+video {
+    max-width: 100%;
+    display: block;
+}
+
+/* Buttons inherit font */
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* ============================================================================
+   TYPOGRAPHY UTILITIES
+   Semantic class names for the type scale. Use these in components
+   rather than reaching for raw font-size values.
+   ============================================================================ */
+
+.text-display {
+    font-size: var(--text-display-size);
+    line-height: var(--text-display-height);
+    font-weight: var(--text-display-weight);
+    letter-spacing: var(--text-display-spacing);
+}
+
+.text-h1 {
+    font-size: var(--text-h1-size);
+    line-height: var(--text-h1-height);
+    font-weight: var(--text-h1-weight);
+    letter-spacing: var(--text-h1-spacing);
+}
+
+.text-h2 {
+    font-size: var(--text-h2-size);
+    line-height: var(--text-h2-height);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: var(--text-h2-spacing);
+}
+
+.text-h3 {
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-height);
+    font-weight: var(--text-h3-weight);
+    letter-spacing: var(--text-h3-spacing);
+}
+
+.text-h4 {
+    font-size: var(--text-h4-size);
+    line-height: var(--text-h4-height);
+    font-weight: var(--text-h4-weight);
+    letter-spacing: var(--text-h4-spacing);
+}
+
+.text-body-lg {
+    font-size: var(--text-body-lg-size);
+    line-height: var(--text-body-lg-height);
+    font-weight: var(--text-body-lg-weight);
+}
+
+.text-body {
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-height);
+    font-weight: var(--text-body-weight);
+}
+
+.text-body-sm {
+    font-size: var(--text-body-sm-size);
+    line-height: var(--text-body-sm-height);
+    font-weight: var(--text-body-sm-weight);
+}
+
+.text-label {
+    font-size: var(--text-label-size);
+    line-height: var(--text-label-height);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-label-spacing);
+    text-transform: uppercase;
+}
+
+.text-caption {
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-height);
+    font-weight: var(--text-caption-weight);
+    letter-spacing: var(--text-caption-spacing);
+}
+
+.text-metric {
+    font-size: var(--text-metric-size);
+    line-height: var(--text-metric-height);
+    font-weight: var(--text-metric-weight);
+    letter-spacing: var(--text-metric-spacing);
+}
+
+/* Reference IDs — monospace, always. These are physical documents. */
+.text-ref-id {
+    font-family: var(--font-mono);
+    font-size: var(--text-ref-size);
+    line-height: var(--text-ref-height);
+    font-weight: var(--text-ref-weight);
+    letter-spacing: var(--text-ref-spacing);
+}
+
+.text-ref-id-sm {
+    font-family: var(--font-mono);
+    font-size: var(--text-ref-sm-size);
+    line-height: var(--text-ref-sm-height);
+    font-weight: var(--text-ref-sm-weight);
+    letter-spacing: var(--text-ref-sm-spacing);
+}
+
+/* ============================================================================
+   ELEVATION UTILITIES
+   Apply these to elements instead of writing box-shadow manually.
+   ============================================================================ */
+
+.elevation-1 {
+    box-shadow: var(--elevation-1);
+}
+.elevation-2 {
+    box-shadow: var(--elevation-2);
+}
+.elevation-3 {
+    box-shadow: var(--elevation-3);
+}
+.elevation-inset {
+    box-shadow: var(--shadow-inset);
+}
+
+/* ============================================================================
+   LAYOUT UTILITIES
+   ============================================================================ */
+
+/* Public page full-width layout shell */
+.layout-public {
+    min-height: 100vh;
+    background: var(--bg-surface-dark);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Centered max-width container for public pages */
+.layout-container {
+    max-width: var(--layout-max-width);
+    margin-inline: auto;
+    padding-inline: var(--layout-padding);
+    width: 100%;
+}
+
+/* Auth layout — 60/40 two-column split */
+.layout-auth {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: 60% 40%;
+}
+
+@media (max-width: 768px) {
+    .layout-auth {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Three-zone authenticated layout */
+.layout-dashboard {
+    display: flex;
+    min-height: calc(100vh - var(--navbar-height));
+}
+
+/* Module player — three columns */
+.layout-module-player {
+    display: grid;
+    grid-template-columns: var(--module-nav-width) 1fr var(--detail-panel-width);
+    height: calc(100vh - var(--navbar-height));
+    overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+    .layout-module-player {
+        grid-template-columns: var(--module-nav-width) 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .layout-module-player {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        height: auto;
+        overflow: visible;
+    }
+}
+
+/* ── Card Grids ─────────────────────────────────────────────────────────────── */
+
+.grid-kpi {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--card-gap);
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--card-gap);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--card-gap);
+}
+
+.grid-auto {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--card-gap);
+}
+
+@media (max-width: 1024px) {
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .grid-3,
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+    .grid-kpi {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============================================================================
+   LOADING SKELETON
+   Used for card and table row loading states.
+   ============================================================================ */
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--bg-surface-dark) 25%,
+        var(--border-subtle) 50%,
+        var(--bg-surface-dark) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+}
+
+/* ============================================================================
+   FOCUS VISIBLE — MANDATORY
+   Every interactive element must have a visible focus state.
+   No exceptions. This is a fundamental accessibility requirement.
+   ============================================================================ */
+
+:focus-visible {
+    outline: 2px solid var(--green-primary);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+}
+
+/* Remove default focus ring — we manage it via :focus-visible above */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* ============================================================================
+   SCROLLBAR
+   Clean, minimal. Doesn't compete with content.
+   ============================================================================ */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-surface-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-strong);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-default) var(--bg-surface-dark);
+}
+
+/* ============================================================================
+   SELECTION
+   ============================================================================ */
+
+::selection {
+    background: var(--green-pale);
+    color: var(--green-darkest);
+}
+
+/* ============================================================================
+   DARK MODE
+   V1: Not required. Defined here for future implementation.
+   Tokens are overridden at :root level — all components inherit automatically.
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-surface-dark: hsl(120, 15%, 8%); /* #111B11 */
+        --bg-surface-default: hsl(120, 12%, 13%); /* #1C271C */
+        --bg-surface-light: hsl(120, 10%, 18%); /* #273027 */
+
+        --text-primary: #e8f0e8;
+        --text-secondary: #a0b8a0;
+        --text-muted: #6a826a;
+
+        --border-default: #2e4a2e;
+        --border-subtle: #223222;
+        --border-strong: #3a5a3a;
+
+        --green-primary: #4a9a4a;
+        --green-medium: #5aaa5a;
+        --green-whisper: rgba(74, 154, 74, 0.12);
+
+        --shadow-sm:
+            0 1px 2px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+
+        --shadow-md:
+            0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 8px 16px 0 rgba(0, 0, 0, 0.25);
+
+        --shadow-lg:
+            0 8px 16px 0 rgba(0, 0, 0, 0.45), 0 16px 32px 0 rgba(0, 0, 0, 0.3),
+            0 32px 48px 0 rgba(0, 0, 0, 0.2);
+
+        --shadow-inset:
+            inset 0 2px 4px 0 rgba(0, 0, 0, 0.5),
+            inset 0 -1px 0 0 rgba(255, 255, 255, 0.04);
+    }
+}
+
+/* ============================================================================
+   REDUCED MOTION — MANDATORY
+   Every animation must degrade gracefully. This is not optional.
+   Users who have indicated motion discomfort must be respected.
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Remove stagger animations entirely under reduced motion */
+    .card-stagger-1,
+    .card-stagger-2,
+    .card-stagger-3,
+    .card-stagger-4,
+    .card-stagger-5,
+    .card-stagger-6 {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ============================================================================
+   PRINT
+   When a user prints the payment reference page, the reference card must be
+   the dominant element. Everything else recedes.
+   ============================================================================ */
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .card-reference {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        break-inside: avoid;
+    }
+}
